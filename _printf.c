@@ -1,51 +1,53 @@
 #include "main.h"
 
-/** _printf.c = el cerebro
- * 
+/**
+ * handle_specifier - prints according to a format specifier
+ * @spec: format specifier character
+ * @args: argument list
+ *
+ * Return: number of characters printed
+ */
+static int handle_specifier(char spec, va_list args)
+{
+	if (spec == 'c')
+		return (print_char(args));
+	if (spec == 's')
+		return (print_string(args));
+	if (spec == '%')
+		return (_putchar('%'));
+
+	return (_putchar('%') + _putchar(spec));
+}
+
+/**
  * _printf - produces output according to a format
  * @format: format string
  *
- * Return: number of characters printed
+ * Return: number of characters printed, or -1 on error
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int i, count;
+	int i = 0, count = 0;
 
 	if (format == NULL)
 		return (-1);
 
 	va_start(args, format);
-	count = 0;
-	i = 0;
 
-	while (format[i] != '\0')
+	while (format[i])
 	{
 		if (format[i] != '%')
-		{
 			count += _putchar(format[i]);
-		}
 		else
 		{
 			i++;
-
 			if (format[i] == '\0')
 			{
 				va_end(args);
 				return (-1);
 			}
-
-			if (format[i] == 'c')
-				count += print_char(args);
-			else if (format[i] == 's')
-				count += print_string(args);
-			else if (format[i] == '%')
-				count += _putchar('%');
-			else
-			{
-				count += _putchar('%');
-				count += _putchar(format[i]);
-			}
+			count += handle_specifier(format[i], args);
 		}
 		i++;
 	}

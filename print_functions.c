@@ -1,11 +1,10 @@
 #include "main.h"
 
-/** print_functions.c = ejecuta
- * 
+/**
  * _putchar - writes a character to stdout
  * @c: character to print
  *
- * Return: 1 on success
+ * Return: 1 on success, or -1 on error
  */
 int _putchar(char c)
 {
@@ -13,7 +12,7 @@ int _putchar(char c)
 }
 
 /**
- * print_char - prints a char
+ * print_char - prints a character
  * @args: argument list
  *
  * Return: number of characters printed
