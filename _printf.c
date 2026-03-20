@@ -1,5 +1,4 @@
-git add _	
-ain.h"
+#include "main.h"
 
 /**
  * get_func - returns the function for a format specifier
