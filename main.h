@@ -4,13 +4,6 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-int _printf(const char *format, ...);
-int print_char(va_list args);
-int print_string(va_list args);
-int print_percent(va_list args);
-int print_int(va_list args);
-int (*get_func(char c, format_t *formats))(va_list);
-
 /**
  * struct format_s - struct for format specifiers
  * @spec: the format specifier character
@@ -21,5 +14,12 @@ typedef struct format_s
 	char spec;
 	int (*f)(va_list);
 } format_t;
+
+int _printf(const char *format, ...);
+int print_char(va_list args);
+int print_string(va_list args);
+int print_percent(va_list args);
+int print_int(va_list args);
+int (*get_func(char c, format_t *formats))(va_list);
 
 #endif
