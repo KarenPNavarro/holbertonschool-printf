@@ -1,57 +1,80 @@
-#include "main.h"
+git add _	
+ain.h"
 
 /**
- * handle_specifier - prints according to a format specifier
- * @spec: format specifier character
- * @args: argument list
+ * get_func - returns the function for a format specifier
+ * @c: the format specifier character
+ * @formats: array of format_t structs
  *
- * Return: number of characters printed
+ * Return: pointer to the function or NULL
  */
-static int handle_specifier(char spec, va_list args)
+int (*get_func(char c, format_t *formats))(va_list)
 {
-	if (spec == 'c')
-		return (print_char(args));
-	if (spec == 's')
-		return (print_string(args));
-	if (spec == '%')
-		return (_putchar('%'));
+	int i;
 
-	return (_putchar('%') + _putchar(spec));
+	i = 0;
+	while (formats[i].spec != '\0')
+	{
+		if (formats[i].spec == c)
+			return (formats[i].f);
+		i++;
+	}
+	return (NULL);
 }
 
 /**
  * _printf - produces output according to a format
- * @format: format string
+ * @format: the format string
+ * @...: the arguments
  *
- * Return: number of characters printed, or -1 on error
+ * Return: number of characters printed
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int i = 0, count = 0;
+	int i;
+	int count;
+	int (*f)(va_list);
+	format_t formats[] = {
+		{'c', print_char},
+		{'s', print_string},
+		{'%', print_percent},
+		{'d', print_int},
+		{'i', print_int},
+		{'\0', NULL}
+	};
 
 	if (format == NULL)
 		return (-1);
 
 	va_start(args, format);
+	i = 0;
+	count = 0;
 
 	while (format[i])
 	{
 		if (format[i] != '%')
-			count += _putchar(format[i]);
+		{
+			write(1, &format[i], 1);
+			count++;
+		}
 		else
 		{
 			i++;
 			if (format[i] == '\0')
-			{
-				va_end(args);
 				return (-1);
+			f = get_func(format[i], formats);
+			if (f == NULL)
+			{
+				write(1, "%", 1);
+				write(1, &format[i], 1);
+				count += 2;
 			}
-			count += handle_specifier(format[i], args);
+			else
+				count += f(args);
 		}
 		i++;
 	}
-
 	va_end(args);
 	return (count);
 }
