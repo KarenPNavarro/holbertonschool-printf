@@ -1,0 +1,69 @@
+.TH _printf 3 "March 2026" "Holberton School" "_printf manual"
+.SH NAME
+_printf \- produces output according to a format
+
+.SH SYNOPSIS
+.B #include "main.h"
+.PP
+.B int _printf(const char *format, ...);
+
+.SH DESCRIPTION
+The
+.B _printf
+function produces output according to a format string.
+
+The format string is composed of zero or more directives.
+If a character is not a percent sign, it is printed directly.
+The conversion specifiers supported by
+.B _printf
+are:
+
+.TP
+.B %c
+Prints a single character.
+
+.TP
+.B %s
+Prints a string.
+
+.TP
+.B %%
+Prints a percent sign.
+
+.PP
+If the format specifier is not recognized, the percent sign and the unknown specifier are printed.
+
+.SH RETURN VALUE
+Upon successful return,
+.B _printf
+returns the number of characters printed, excluding the terminating null byte.
+
+If
+.I format
+is NULL, or if a percent sign is followed by the end of the string,
+.B _printf
+returns -1.
+
+.SH EXAMPLES
+.B _printf("Character: %c\\n", 'A');
+.PP
+Character: A
+
+.B _printf("String: %s\\n", "Hello");
+.PP
+String: Hello
+
+.B _printf("Percent: %%\\n");
+.PP
+Percent: %
+
+.SH FILES
+.I main.h
+Header file containing the prototype of
+.B _printf
+
+.SH SEE ALSO
+.BR printf (3)
+
+.SH AUTHORS
+Written by Jorge L. Burgos Cruz and project collaborators.
