@@ -22,6 +22,38 @@ int (*get_func(char c, format_t *formats))(va_list)
 }
 
 /**
+ * handle_percent - handles a percent sequence in the format string
+ * @format: the format string
+ * @i: index pointer (points to '%', will be advanced)
+ * @args: the argument list
+ * @formats: array of supported formats
+ * @count: printed character count
+ *
+ * Return: 0 on success, -1 on error
+ */
+static int handle_percent(const char *format, int *i, va_list args,
+		format_t *formats, int *count)
+{
+	int (*f)(va_list);
+
+	(*i)++;
+	if (format[*i] == '\0')
+		return (-1);
+
+	f = get_func(format[*i], formats);
+	if (f == NULL)
+	{
+		write(1, "%", 1);
+		write(1, &format[*i], 1);
+		*count += 2;
+	}
+	else
+		*count += f(args);
+
+	return (0);
+}
+
+/**
  * _printf - produces output according to a format
  * @format: the format string
  * @...: the arguments
@@ -33,13 +65,13 @@ int _printf(const char *format, ...)
 	va_list args;
 	int i;
 	int count;
-	int (*f)(va_list);
 	format_t formats[] = {
 		{'c', print_char},
 		{'s', print_string},
 		{'%', print_percent},
 		{'d', print_int},
 		{'i', print_int},
+		{'b', print_binary},
 		{'\0', NULL}
 	};
 
@@ -59,18 +91,11 @@ int _printf(const char *format, ...)
 		}
 		else
 		{
-			i++;
-			if (format[i] == '\0')
-				return (-1);
-			f = get_func(format[i], formats);
-			if (f == NULL)
+			if (handle_percent(format, &i, args, formats, &count) == -1)
 			{
-				write(1, "%", 1);
-				write(1, &format[i], 1);
-				count += 2;
+				va_end(args);
+				return (-1);
 			}
-			else
-				count += f(args);
 		}
 		i++;
 	}

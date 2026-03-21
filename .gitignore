@@ -1,0 +1,7 @@
+# build artifacts
+*.o
+*.a
+*.out
+a.out
+printf_test
+test_printf

@@ -20,6 +20,7 @@ int print_char(va_list args);
 int print_string(va_list args);
 int print_percent(va_list args);
 int print_int(va_list args);
+int print_binary(va_list args);
 int (*get_func(char c, format_t *formats))(va_list);
 
 #endif
