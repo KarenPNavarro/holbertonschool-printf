@@ -9,6 +9,10 @@ Custom implementation of `printf` for Holberton.
 - `%%` percent sign
 - `%d` / `%i` signed int
 - `%b` unsigned int as binary
+- `%u` unsigned int
+- `%o` unsigned int as octal
+- `%x` unsigned int as hexadecimal (lowercase)
+- `%X` unsigned int as hexadecimal (uppercase)
 
 ## Build (library objects)
 
