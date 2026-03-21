@@ -11,7 +11,7 @@ int print_char(va_list args)
 	char c;
 
 	c = va_arg(args, int);
-	write(1, &c, 1);
+	_buf_putc(c);
 	return (1);
 }
 
@@ -32,7 +32,7 @@ int print_string(va_list args)
 	i = 0;
 	while (str[i])
 	{
-		write(1, &str[i], 1);
+		_buf_putc(str[i]);
 		i++;
 	}
 	return (i);
@@ -47,6 +47,6 @@ int print_string(va_list args)
 int print_percent(va_list args)
 {
 	(void)args;
-	write(1, "%", 1);
+	_buf_putc('%');
 	return (1);
 }

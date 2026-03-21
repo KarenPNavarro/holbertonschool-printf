@@ -18,7 +18,7 @@ static int print_unsigned_base(unsigned int n, const char *digits,
 
 	if (n == 0)
 	{
-		write(1, "0", 1);
+		_buf_putc('0');
 		return (1);
 	}
 
@@ -34,7 +34,7 @@ static int print_unsigned_base(unsigned int n, const char *digits,
 	while (i >= 0)
 	{
 		c = buf[i];
-		write(1, &c, 1);
+		_buf_putc(c);
 		i--;
 	}
 

@@ -17,11 +17,11 @@ int print_int(va_list args)
 	count = 0;
 	if (n < 0)
 	{
-		write(1, "-", 1);
+		_buf_putc('-');
 		count++;
 		if (n == -2147483648)
 		{
-			write(1, "2147483648", 10);
+			_buf_write("2147483648", 10);
 			return (count + 10);
 		}
 		n = -n;
@@ -32,7 +32,7 @@ int print_int(va_list args)
 	while (divisor >= 1)
 	{
 		digit = '0' + (n / divisor);
-		write(1, &digit, 1);
+		_buf_putc(digit);
 		count++;
 		n %= divisor;
 		divisor /= 10;

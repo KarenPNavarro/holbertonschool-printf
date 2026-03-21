@@ -16,7 +16,7 @@ int print_binary(va_list args)
 	n = va_arg(args, unsigned int);
 	if (n == 0)
 	{
-		write(1, "0", 1);
+		_buf_putc('0');
 		return (1);
 	}
 
@@ -32,7 +32,7 @@ int print_binary(va_list args)
 	while (len > 0)
 	{
 		len--;
-		write(1, &bits[len], 1);
+		_buf_putc(bits[len]);
 	}
 
 	return (printed);

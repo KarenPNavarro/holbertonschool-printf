@@ -38,13 +38,16 @@ static int handle_percent(const char *format, int *i, va_list args,
 
 	(*i)++;
 	if (format[*i] == '\0')
+	{
+		_buf_discard();
 		return (-1);
+	}
 
 	f = get_func(format[*i], formats);
 	if (f == NULL)
 	{
-		write(1, "%", 1);
-		write(1, &format[*i], 1);
+		_buf_putc('%');
+		_buf_putc(format[*i]);
 		*count += 2;
 	}
 	else
@@ -90,18 +93,25 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] != '%')
 		{
-			write(1, &format[i], 1);
+			_buf_putc(format[i]);
 			count++;
 		}
 		else
 		{
 			if (handle_percent(format, &i, args, formats, &count) == -1)
 			{
+				_buf_discard();
 				va_end(args);
 				return (-1);
 			}
 		}
 		i++;
+	}
+	if (_buf_flush() == -1)
+	{
+		_buf_discard();
+		va_end(args);
+		return (-1);
 	}
 	va_end(args);
 	return (count);

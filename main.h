@@ -27,4 +27,9 @@ int print_hex_lower(va_list args);
 int print_hex_upper(va_list args);
 int (*get_func(char c, format_t *formats))(va_list);
 
+int _buf_flush(void);
+void _buf_discard(void);
+int _buf_putc(char c);
+int _buf_write(const char *s, int len);
+
 #endif
