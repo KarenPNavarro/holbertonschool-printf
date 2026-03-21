@@ -13,6 +13,7 @@ Custom implementation of `printf` for Holberton.
 - `%o` unsigned int as octal
 - `%x` unsigned int as hexadecimal (lowercase)
 - `%X` unsigned int as hexadecimal (uppercase)
+- `%S` string with non printable chars as `\\xHH`
 
 ## Build (library objects)
 

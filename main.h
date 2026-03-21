@@ -25,6 +25,7 @@ int print_unsigned(va_list args);
 int print_octal(va_list args);
 int print_hex_lower(va_list args);
 int print_hex_upper(va_list args);
+int print_S(va_list args);
 int (*get_func(char c, format_t *formats))(va_list);
 
 int _buf_flush(void);
