@@ -59,6 +59,55 @@ int handle_short(char spec, va_list args)
 }
 
 /**
+ * get_width - reads field width from format string
+ * @format: format string
+ * @i: current index pointer
+ * @args: argument list
+ *
+ * Return: field width
+ */
+int get_width(const char *format, int *i, va_list args)
+{
+	int width;
+
+	width = 0;
+	if (format[*i] == '*')
+	{
+		width = va_arg(args, int);
+		(*i)++;
+	}
+	else
+	{
+		while (format[*i] >= '0' && format[*i] <= '9')
+		{
+			width = width * 10 + (format[*i] - '0');
+			(*i)++;
+		}
+	}
+	return (width);
+}
+
+/**
+ * print_width - prints padding spaces
+ * @width: number of spaces to print
+ * @printed: number of chars already printed
+ *
+ * Return: number of padding characters printed
+ */
+int print_width(int width, int printed)
+{
+	int count;
+
+	count = 0;
+	while (printed + count < width)
+	{
+		_buf_putc(' ');
+		count++;
+	}
+	return (count);
+}
+
+/**
  * _printf - produces output according to a format
  * @format: the format string
  * @...: the arguments
@@ -70,6 +119,8 @@ int _printf(const char *format, ...)
 	va_list args;
 	int i;
 	int count;
+	int printed;
+	int width;
 	int (*f)(va_list);
 	format_t formats[] = {
 		{'c', print_char},
@@ -109,13 +160,18 @@ int _printf(const char *format, ...)
 				_buf_flush();
 				return (-1);
 			}
+			width = get_width(format, &i, args);
 			if (format[i] == 'l')
 			{
 				i++;
 				if (format[i] == 'd' || format[i] == 'i' ||
 					format[i] == 'u' || format[i] == 'o' ||
 					format[i] == 'x' || format[i] == 'X')
-					count += handle_long(format[i], args);
+				{
+					printed = handle_long(format[i], args);
+					count += print_width(width, printed);
+					count += printed;
+				}
 				else
 				{
 					_buf_putc('%');
@@ -130,7 +186,11 @@ int _printf(const char *format, ...)
 				if (format[i] == 'd' || format[i] == 'i' ||
 					format[i] == 'u' || format[i] == 'o' ||
 					format[i] == 'x' || format[i] == 'X')
-					count += handle_short(format[i], args);
+				{
+					printed = handle_short(format[i], args);
+					count += print_width(width, printed);
+					count += printed;
+				}
 				else
 				{
 					_buf_putc('%');
@@ -149,7 +209,11 @@ int _printf(const char *format, ...)
 					count += 2;
 				}
 				else
-					count += f(args);
+				{
+					printed = f(args);
+					count += print_width(width, printed);
+					count += printed;
+				}
 			}
 		}
 		i++;

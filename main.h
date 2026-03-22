@@ -37,5 +37,7 @@ int _buf_flush(void);
 void _buf_discard(void);
 int _buf_putc(char c);
 int _buf_write(const char *s, int len);
+int get_width(const char *format, int *i, va_list args);
+int print_width(int width, int printed);
 
 #endif
