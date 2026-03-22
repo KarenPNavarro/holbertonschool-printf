@@ -24,11 +24,18 @@ int print_unsigned(va_list args);
 int print_octal(va_list args);
 int print_hex_lower(va_list args);
 int print_hex_upper(va_list args);
+int print_binary(va_list args);
+int print_S(va_list args);
+int print_pointer(va_list args);
 int (*get_func(char c, format_t *formats))(va_list);
 int handle_long(char spec, va_list args);
 int handle_short(char spec, va_list args);
 int print_uint(unsigned long int n);
 int print_base(unsigned long int n, int base, int upper);
 int print_long(long int n);
+int _buf_flush(void);
+void _buf_discard(void);
+int _buf_putc(char c);
+int _buf_write(const char *s, int len);
 
 #endif
