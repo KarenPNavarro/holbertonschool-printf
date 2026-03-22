@@ -1,6 +1,27 @@
 #include "main.h"
 
 /**
+ * get_func - returns the function for a format specifier
+ * @c: the format specifier character
+ * @formats: array of format_t structs
+ *
+ * Return: pointer to the function or NULL
+ */
+int (*get_func(char c, format_t *formats))(va_list)
+{
+	int i;
+
+	i = 0;
+	while (formats[i].spec != '\0')
+	{
+		if (formats[i].spec == c)
+			return (formats[i].f);
+		i++;
+	}
+	return (NULL);
+}
+
+/**
  * handle_long - handles l length modifier
  * @spec: format specifier
  * @args: argument list
@@ -81,9 +102,6 @@ int _printf(const char *format, ...)
 		{'o', print_octal},
 		{'x', print_hex_lower},
 		{'X', print_hex_upper},
-		{'b', print_binary},
-		{'S', print_S},
-		{'p', print_pointer},
 		{'\0', NULL}
 	};
 
@@ -98,62 +116,39 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] != '%')
 		{
-			_buf_putc(format[i]);
+			write(1, &format[i], 1);
 			count++;
 		}
-else
-{
-    i++;
-    if (format[i] == '\0')
-    {
-        _buf_flush();
-        return (-1);
-    }
-    if (format[i] == 'l')
-    {
-        i++;
-        if (format[i] == 'd' || format[i] == 'i' ||
-            format[i] == 'u' || format[i] == 'o' ||
-            format[i] == 'x' || format[i] == 'X')
-            count += handle_long(format[i], args);
-        else
-        {
-            _buf_putc('%');
-            _buf_putc('l');
-            _buf_putc(format[i]);
-            count += 3;
-        }
-    }
-    else if (format[i] == 'h')
-    {
-        i++;
-        if (format[i] == 'd' || format[i] == 'i' ||
-            format[i] == 'u' || format[i] == 'o' ||
-            format[i] == 'x' || format[i] == 'X')
-            count += handle_short(format[i], args);
-        else
-        {
-            _buf_putc('%');
-            _buf_putc('h');
-            _buf_putc(format[i]);
-            count += 3;
-        }
-    }
-    else
-    {
-        f = get_func(format[i], formats);
-        if (f == NULL)
-        {
-            _buf_putc('%');
-            _buf_putc(format[i]);
-            count += 2;
-        }
-        else
-            count += f(args);
-    }
-}
-	if (_buf_flush() == -1)
-		return (-1);
+		else
+		{
+			i++;
+			if (format[i] == '\0')
+				return (-1);
+			if (format[i] == 'l')
+			{
+				i++;
+				count += handle_long(format[i], args);
+			}
+			else if (format[i] == 'h')
+			{
+				i++;
+				count += handle_short(format[i], args);
+			}
+			else
+			{
+				f = get_func(format[i], formats);
+				if (f == NULL)
+				{
+					write(1, "%", 1);
+					write(1, &format[i], 1);
+					count += 2;
+				}
+				else
+					count += f(args);
+			}
+		}
+		i++;
+	}
 	va_end(args);
 	return (count);
 }
