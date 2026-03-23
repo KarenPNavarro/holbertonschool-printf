@@ -16,6 +16,14 @@ int main(void)
 	printf("%+d % d\n", 42, 42);
 	_printf("%#x %#X %#o\n", 42, 42, 42);
 	printf("%#x %#X %#o\n", 42, 42, 42);
+	_printf("[%.0d][%+.0d][% .0d]\n", 0, 0, 0);
+	printf("[%.0d][%+.0d][% .0d]\n", 0, 0, 0);
+	_printf("[%.5d][%.3u]\n", 42, 7);
+	printf("[%.5d][%.3u]\n", 42, 7);
+	_printf("[%.0x][%#.0x][%#.0o]\n", 0, 0, 0);
+	printf("[%.0x][%#.0x][%#.0o]\n", 0, 0, 0);
+	_printf("[%.3s][%.0s]\n", "Holberton", "Holberton");
+	printf("[%.3s][%.0s]\n", "Holberton", "Holberton");
 
 	return (0);
 }
