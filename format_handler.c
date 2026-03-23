@@ -2,19 +2,20 @@
 #include "main.h"
 
 /**
- * parse_flags - parses +, space, # and 0 flags
+ * parse_flags - parses +, space, #, 0 and - flags
  * @format: format string
  * @i: current index pointer
  * @plus: '+' flag
  * @space: ' ' flag
  * @hash: '#' flag
  * @zero: '0' flag
+ * @minus: '-' flag
  */
 static void parse_flags(const char *format, int *i, int *plus, int *space,
-		int *hash, int *zero)
+		int *hash, int *zero, int *minus)
 {
 	while (format[*i] == '+' || format[*i] == ' ' || format[*i] == '#' ||
-			format[*i] == '0')
+			format[*i] == '0' || format[*i] == '-')
 	{
 		if (format[*i] == '+')
 			*plus = 1;
@@ -22,8 +23,10 @@ static void parse_flags(const char *format, int *i, int *plus, int *space,
 			*space = 1;
 		else if (format[*i] == '#')
 			*hash = 1;
-		else
+		else if (format[*i] == '0')
 			*zero = 1;
+		else
+			*minus = 1;
 		(*i)++;
 	}
 }
@@ -106,7 +109,7 @@ static int print_unknown(const char *format, int start, int end)
  */
 int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 {
-	int plus, space, hash, zero;
+	int plus, space, hash, zero, minus;
 	int width, precision;
 	char length;
 	int start;
@@ -131,7 +134,8 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 	space = 0;
 	hash = 0;
 	zero = 0;
-	parse_flags(format, i, &plus, &space, &hash, &zero);
+	minus = 0;
+	parse_flags(format, i, &plus, &space, &hash, &zero, &minus);
 	width = get_width(format, i, args);
 	precision = get_precision(format, i, args);
 	length = 0;
@@ -144,7 +148,7 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 		return (-1);
 
 	spec = format[*i];
-	pad = (zero && precision < 0 && (spec == 'd' || spec == 'i' || spec == 'u' ||
+	pad = (zero && !minus && precision < 0 && (spec == 'd' || spec == 'i' ||
 					spec == 'o' || spec == 'x' || spec == 'X' || spec == 'p'))
 		? '0' : ' ';
 	printed = 0;
@@ -152,16 +156,22 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 	if (spec == 'c')
 	{
 		pad_len = (width > 1) ? (width - 1) : 0;
-		printed += repeat_char(' ', pad_len);
-		printed += print_char(args);
-		return (printed);
+		if (!minus)
+			repeat_char(' ', pad_len);
+		printed = print_char(args);
+		if (minus)
+			repeat_char(' ', pad_len);
+		return (printed + pad_len);
 	}
 	if (spec == '%')
 	{
 		pad_len = (width > 1) ? (width - 1) : 0;
-		printed += repeat_char(' ', pad_len);
-		printed += print_percent(args);
-		return (printed);
+		if (!minus)
+			repeat_char(' ', pad_len);
+		printed = print_percent(args);
+		if (minus)
+			repeat_char(' ', pad_len);
+		return (printed + pad_len);
 	}
 	if (spec == 's')
 	{
@@ -181,8 +191,12 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 			while (s[k] && k < precision)
 				k++;
 			slen = k;
-			repeat_char(' ', (width > slen) ? (width - slen) : 0);
+			pad_len = (width > slen) ? (width - slen) : 0;
+			if (!minus)
+				repeat_char(' ', pad_len);
 			printed = print_str_prec(s, slen);
+			if (minus)
+				repeat_char(' ', pad_len);
 			return ((width > slen) ? width : slen);
 		}
 	}
@@ -217,16 +231,29 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 		pad_len = (width > (prefix_len + printed)) ?
 			(width - (prefix_len + printed)) : 0;
 
-		if (pad == ' ')
+		if (!minus)
+		{
+			if (pad == ' ')
+				repeat_char(' ', pad_len);
+			if (sign)
+				_buf_putc(sign);
+			if (pad == '0')
+				repeat_char('0', pad_len);
+			else if (precision > digits)
+				repeat_char('0', precision - digits);
+			if (!(precision == 0 && mag == 0))
+				print_uint(mag);
+		}
+		else
+		{
+			if (sign)
+				_buf_putc(sign);
+			if (precision > digits)
+				repeat_char('0', precision - digits);
+			if (!(precision == 0 && mag == 0))
+				print_uint(mag);
 			repeat_char(' ', pad_len);
-		if (sign)
-			_buf_putc(sign);
-		if (pad == '0')
-			repeat_char('0', pad_len);
-		else if (precision > digits)
-			repeat_char('0', precision - digits);
-		if (!(precision == 0 && mag == 0))
-			print_uint(mag);
+		}
 		return ((width > (prefix_len + printed)) ? width : (prefix_len + printed));
 	}
 
@@ -252,8 +279,11 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 			{
 				printed = 0;
 				pad_len = (width > 1) ? (width - 1) : 0;
-				repeat_char(' ', pad_len);
+				if (!minus)
+					repeat_char(' ', pad_len);
 				_buf_putc('0');
+				if (minus)
+					repeat_char(' ', pad_len);
 				return ((width > 1) ? width : 1);
 			}
 			digits = (precision == 0 && un == 0) ? 0 : ulen_base(un, base);
@@ -275,19 +305,34 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 		}
 
 		pad_len = (width > (pfx + printed)) ? (width - (pfx + printed)) : 0;
-		if (pad == ' ')
-			repeat_char(' ', pad_len);
-		if (pfx == 1)
-			_buf_putc('0');
-		else if (pfx == 2)
+		if (!minus)
 		{
-			_buf_putc('0');
-			_buf_putc(upper ? 'X' : 'x');
+			if (pad == ' ')
+				repeat_char(' ', pad_len);
+			if (pfx == 1)
+				_buf_putc('0');
+			else if (pfx == 2)
+			{
+				_buf_putc('0');
+				_buf_putc(upper ? 'X' : 'x');
+			}
+			if (pad == '0')
+				repeat_char('0', pad_len);
+			else if (precision > digits)
+				repeat_char('0', precision - digits);
 		}
-		if (pad == '0')
-			repeat_char('0', pad_len);
-		else if (precision > digits)
-			repeat_char('0', precision - digits);
+		else
+		{
+			if (pfx == 1)
+				_buf_putc('0');
+			else if (pfx == 2)
+			{
+				_buf_putc('0');
+				_buf_putc(upper ? 'X' : 'x');
+			}
+			if (precision > digits)
+				repeat_char('0', precision - digits);
+		}
 
 		if (!(precision == 0 && un == 0))
 		{
@@ -296,6 +341,8 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 			else
 				print_base(un, base, upper);
 		}
+		if (minus)
+			repeat_char(' ', pad_len);
 		return ((width > (pfx + printed)) ? width : (pfx + printed));
 	}
 
@@ -310,8 +357,12 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 			int len;
 
 			len = 5;
-			repeat_char(' ', (width > len) ? (width - len) : 0);
+			pad_len = (width > len) ? (width - len) : 0;
+			if (!minus)
+				repeat_char(' ', pad_len);
 			_buf_write("(nil)", 5);
+			if (minus)
+				repeat_char(' ', pad_len);
 			return ((width > len) ? width : len);
 		}
 
@@ -322,15 +373,27 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 		pad_len = (width > (prefix_len + printed)) ?
 			(width - (prefix_len + printed)) : 0;
 
-		if (pad == ' ')
+		if (!minus)
+		{
+			if (pad == ' ')
+				repeat_char(' ', pad_len);
+			_buf_write("0x", 2);
+			if (pad == '0')
+				repeat_char('0', pad_len);
+			else if (precision > digits)
+				repeat_char('0', precision - digits);
+			if (!(precision == 0 && value == 0))
+				print_base((unsigned long int)value, 16, 0);
+		}
+		else
+		{
+			_buf_write("0x", 2);
+			if (precision > digits)
+				repeat_char('0', precision - digits);
+			if (!(precision == 0 && value == 0))
+				print_base((unsigned long int)value, 16, 0);
 			repeat_char(' ', pad_len);
-		_buf_write("0x", 2);
-		if (pad == '0')
-			repeat_char('0', pad_len);
-		else if (precision > digits)
-			repeat_char('0', precision - digits);
-		if (!(precision == 0 && value == 0))
-			print_base((unsigned long int)value, 16, 0);
+		}
 		return ((width > (prefix_len + printed)) ? width : (prefix_len + printed));
 	}
 
