@@ -2,8 +2,23 @@
 
 #define PRINTF_BUF_SIZE 1024
 
-static char printf_buf[PRINTF_BUF_SIZE];
-static int printf_buf_i;
+/**
+ * struct buf_state_s - internal printf buffer state
+ * @buf: buffer storage
+ * @i: current index
+ */
+typedef struct buf_state_s
+{
+	char buf[PRINTF_BUF_SIZE];
+	int i;
+} buf_state_t;
+
+static buf_state_t *buf_state(void)
+{
+	static buf_state_t st;
+
+	return (&st);
+}
 
 /**
  * _buf_flush - writes the current buffer to stdout
@@ -12,16 +27,19 @@ static int printf_buf_i;
  */
 int _buf_flush(void)
 {
+	buf_state_t *st;
 	int written;
 
-	if (printf_buf_i <= 0)
+	st = buf_state();
+
+	if (st->i <= 0)
 		return (0);
 
-	written = write(1, printf_buf, printf_buf_i);
+	written = write(1, st->buf, st->i);
 	if (written == -1)
 		return (-1);
 
-	printf_buf_i = 0;
+	st->i = 0;
 	return (written);
 }
 
@@ -30,7 +48,10 @@ int _buf_flush(void)
  */
 void _buf_discard(void)
 {
-	printf_buf_i = 0;
+	buf_state_t *st;
+
+	st = buf_state();
+	st->i = 0;
 }
 
 /**
@@ -41,17 +62,20 @@ void _buf_discard(void)
  */
 int _buf_putc(char c)
 {
+	buf_state_t *st;
 	int rc;
 
-	if (printf_buf_i >= PRINTF_BUF_SIZE)
+	st = buf_state();
+
+	if (st->i >= PRINTF_BUF_SIZE)
 	{
 		rc = _buf_flush();
 		if (rc == -1)
 			return (-1);
 	}
 
-	printf_buf[printf_buf_i] = c;
-	printf_buf_i++;
+	st->buf[st->i] = c;
+	st->i++;
 	return (1);
 }
 
