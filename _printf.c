@@ -26,6 +26,7 @@ int _printf(const char *format, ...)
 		{'b', print_binary},
 		{'S', print_S},
 		{'p', print_pointer},
+		{'r', print_rev},
 		{'\0', NULL}
 	};
 

@@ -41,6 +41,10 @@ int main(void)
 	printf("[%-10.3u][%-8.0x][%-#8.0o]\n", 7, 0, 0);
 	_printf("[%-5s][%-3c][%-5%]\n", "hi", 'A', 0);
 	printf("[%-5s][%-3c][%-5%]\n", "hi", 'A', 0);
+	_printf("[%r][%10r]\n", "Holberton", "abc");
+	printf("[%s][%10s]\n", "notrebloH", "cba");
+	_printf("[%r]\n", NULL);
+	printf("[%s]\n", ")llun(");
 
 	return (0);
 }
