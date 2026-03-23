@@ -7,7 +7,7 @@
  *
  * Return: pointer to the function or NULL
  */
-int (*get_func(char c, format_t *formats))(va_list)
+int (*get_func(char c, format_t *formats))(va_list *)
 {
 	int i;
 

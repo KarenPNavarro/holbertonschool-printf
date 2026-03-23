@@ -8,7 +8,7 @@
  *
  * Return: precision value, or -1 if not specified
  */
-int get_precision(const char *format, int *i, va_list args)
+int get_precision(const char *format, int *i, va_list *args)
 {
 	int precision;
 
@@ -18,7 +18,7 @@ int get_precision(const char *format, int *i, va_list args)
 	(*i)++;
 	if (format[*i] == '*')
 	{
-		precision = va_arg(args, int);
+		precision = va_arg(*args, int);
 		(*i)++;
 		if (precision < 0)
 			return (-1);

@@ -6,11 +6,11 @@
  *
  * Return: number of characters printed
  */
-int print_char(va_list args)
+int print_char(va_list *args)
 {
 	char c;
 
-	c = va_arg(args, int);
+	c = va_arg(*args, int);
 	_buf_putc(c);
 	return (1);
 }
@@ -21,12 +21,12 @@ int print_char(va_list args)
  *
  * Return: number of characters printed
  */
-int print_string(va_list args)
+int print_string(va_list *args)
 {
 	char *str;
 	int i;
 
-	str = va_arg(args, char *);
+	str = va_arg(*args, char *);
 	if (str == NULL)
 		str = "(null)";
 	i = 0;
@@ -44,7 +44,7 @@ int print_string(va_list args)
  *
  * Return: number of characters printed
  */
-int print_percent(va_list args)
+int print_percent(va_list *args)
 {
 	(void)args;
 	_buf_putc('%');

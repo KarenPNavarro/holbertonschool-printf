@@ -47,11 +47,11 @@ static int print_unsigned_base(unsigned int n, const char *digits,
  *
  * Return: number of characters printed
  */
-int print_unsigned(va_list args)
+int print_unsigned(va_list *args)
 {
 	unsigned int n;
 
-	n = va_arg(args, unsigned int);
+	n = va_arg(*args, unsigned int);
 	return (print_unsigned_base(n, "0123456789", 10));
 }
 
@@ -61,11 +61,11 @@ int print_unsigned(va_list args)
  *
  * Return: number of characters printed
  */
-int print_octal(va_list args)
+int print_octal(va_list *args)
 {
 	unsigned int n;
 
-	n = va_arg(args, unsigned int);
+	n = va_arg(*args, unsigned int);
 	return (print_unsigned_base(n, "01234567", 8));
 }
 
@@ -75,11 +75,11 @@ int print_octal(va_list args)
  *
  * Return: number of characters printed
  */
-int print_hex_lower(va_list args)
+int print_hex_lower(va_list *args)
 {
 	unsigned int n;
 
-	n = va_arg(args, unsigned int);
+	n = va_arg(*args, unsigned int);
 	return (print_unsigned_base(n, "0123456789abcdef", 16));
 }
 
@@ -89,10 +89,10 @@ int print_hex_lower(va_list args)
  *
  * Return: number of characters printed
  */
-int print_hex_upper(va_list args)
+int print_hex_upper(va_list *args)
 {
 	unsigned int n;
 
-	n = va_arg(args, unsigned int);
+	n = va_arg(*args, unsigned int);
 	return (print_unsigned_base(n, "0123456789ABCDEF", 16));
 }

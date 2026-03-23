@@ -23,14 +23,14 @@ static void put_hex_byte(unsigned char c)
  *
  * Return: number of characters printed
  */
-int print_S(va_list args)
+int print_S(va_list *args)
 {
 	char *str;
 	int i;
 	int count;
 	unsigned char c;
 
-	str = va_arg(args, char *);
+	str = va_arg(*args, char *);
 	if (str == NULL)
 		str = "(null)";
 

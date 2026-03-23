@@ -8,6 +8,8 @@
  */
 int main(void)
 {
+	setvbuf(stdout, NULL, _IONBF, 0);
+
 	_printf("%b\n", 98);
 	printf("%s\n", "1100010");
 	_printf("%S\n", "Best\nSchool");
@@ -24,6 +26,13 @@ int main(void)
 	printf("[%.0x][%#.0x][%#.0o]\n", 0, 0, 0);
 	_printf("[%.3s][%.0s]\n", "Holberton", "Holberton");
 	printf("[%.3s][%.0s]\n", "Holberton", "Holberton");
+
+	_printf("[%05d][%05d][%+05d][% 05d]\n", 42, -42, 42, 42);
+	printf("[%05d][%05d][%+05d][% 05d]\n", 42, -42, 42, 42);
+	_printf("[%05.3d][%010.0u]\n", 7, 0);
+	printf("[%05.3d][%010.0u]\n", 7, 0);
+	_printf("[%#08x][%#08X][%#06o]\n", 42, 42, 42);
+	printf("[%#08x][%#08X][%#06o]\n", 42, 42, 42);
 
 	return (0);
 }

@@ -6,14 +6,14 @@
  *
  * Return: number of characters printed
  */
-int print_binary(va_list args)
+int print_binary(va_list *args)
 {
 	unsigned int n;
 	char bits[sizeof(unsigned int) * 8];
 	int len;
 	int printed;
 
-	n = va_arg(args, unsigned int);
+	n = va_arg(*args, unsigned int);
 	if (n == 0)
 	{
 		_buf_putc('0');

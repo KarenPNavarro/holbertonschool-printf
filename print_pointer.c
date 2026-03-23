@@ -7,7 +7,7 @@
  *
  * Return: number of characters printed
  */
-int print_pointer(va_list args)
+int print_pointer(va_list *args)
 {
 	void *ptr;
 	uintptr_t value;
@@ -16,7 +16,7 @@ int print_pointer(va_list args)
 	int len;
 	int i;
 
-	ptr = va_arg(args, void *);
+	ptr = va_arg(*args, void *);
 	if (ptr == NULL)
 	{
 		_buf_write("(nil)", 5);

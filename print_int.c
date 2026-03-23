@@ -6,14 +6,14 @@
  *
  * Return: number of characters printed
  */
-int print_int(va_list args)
+int print_int(va_list *args)
 {
 	int n;
 	int count;
 	int divisor;
 	char digit;
 
-	n = va_arg(args, int);
+	n = va_arg(*args, int);
 	count = 0;
 	if (n < 0)
 	{
