@@ -154,7 +154,7 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 
 	spec = format[*i];
 	pad = (zero && !minus && precision < 0 && (spec == 'd' || spec == 'i' ||
-					spec == 'o' || spec == 'x' || spec == 'X' || spec == 'p'))
+					spec == 'u' || spec == 'o' || spec == 'x' || spec == 'X' || spec == 'p'))
 		? '0' : ' ';
 	printed = 0;
 
