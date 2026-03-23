@@ -229,6 +229,42 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 		return ((width > k) ? width : k);
 	}
 
+	if (spec == 'R')
+	{
+		char *s;
+		int slen;
+		int k;
+		int j;
+		char c;
+
+		if (precision < 0)
+			precision = 2147483647;
+		s = va_arg(*args, char *);
+		if (s == NULL)
+			s = "(null)";
+		k = 0;
+		while (s[k] && k < precision)
+			k++;
+		slen = k;
+		pad_len = (width > slen) ? (width - slen) : 0;
+		if (!minus)
+			repeat_char(' ', pad_len);
+		j = 0;
+		while (j < slen)
+		{
+			c = s[j];
+			if (c >= 'a' && c <= 'z')
+				c = (char)('a' + (c - 'a' + 13) % 26);
+			else if (c >= 'A' && c <= 'Z')
+				c = (char)('A' + (c - 'A' + 13) % 26);
+			_buf_putc(c);
+			j++;
+		}
+		if (minus)
+			repeat_char(' ', pad_len);
+		return ((width > slen) ? width : slen);
+	}
+
 	if (spec == 'd' || spec == 'i')
 	{
 		if (length == 'l')

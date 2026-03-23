@@ -28,6 +28,7 @@ int print_binary(va_list *args);
 int print_S(va_list *args);
 int print_pointer(va_list *args);
 int print_rev(va_list *args);
+int print_rot13(va_list *args);
 int (*get_func(char c, format_t *formats))(va_list *);
 int print_uint(unsigned long int n);
 int print_base(unsigned long int n, int base, int upper);

@@ -45,6 +45,10 @@ int main(void)
 	printf("[%s][%10s]\n", "notrebloH", "cba");
 	_printf("[%r]\n", NULL);
 	printf("[%s]\n", ")llun(");
+	_printf("[%R][%10R][%-10R]\n", "Holberton", "abc", "abc");
+	printf("[%s][%10s][%-10s]\n", "Ubyoregba", "nop", "nop");
+	_printf("[%R]\n", NULL);
+	printf("[%s]\n", "(ahyy)");
 
 	return (0);
 }

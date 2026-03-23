@@ -27,6 +27,7 @@ int _printf(const char *format, ...)
 		{'S', print_S},
 		{'p', print_pointer},
 		{'r', print_rev},
+		{'R', print_rot13},
 		{'\0', NULL}
 	};
 
