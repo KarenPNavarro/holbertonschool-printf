@@ -138,6 +138,11 @@ int handle_format(const char *format, int *i, va_list *args, format_t *formats)
 	parse_flags(format, i, &plus, &space, &hash, &zero, &minus);
 	width = get_width(format, i, args);
 	precision = get_precision(format, i, args);
+	if (width < 0)
+	{
+		minus = 1;
+		width = -width;
+	}
 	length = 0;
 	if (format[*i] == 'l' || format[*i] == 'h')
 	{
